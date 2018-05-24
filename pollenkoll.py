@@ -80,7 +80,7 @@ class PollenkollSensor(Entity):
         self._pollen = None
         self._result = None
         self._status = namedtuple(
-            'status', [ATTR_POLLEN, 'day0_value', ATTR_TYPE])
+            'status', [ATTR_POLLEN, 'day0_desc', ATTR_TYPE])
 
     @property
     def name(self):
