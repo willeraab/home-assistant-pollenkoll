@@ -32,7 +32,6 @@ _LOGGER = logging.getLogger(__name__)
 _ENDPOINT = 'https://pollenkoll.se/wp-content/themes/pollenkoll/api/get_cities.php'
 
 ATTR_POLLEN = 'pollen'
-ATTR_TODAY = 'day0_value'
 ATTR_TYPE = 'type'
 
 DEFAULT_NAME = 'Pollenkoll'
@@ -77,11 +76,11 @@ class PollenkollSensor(Entity):
         self._item = item
         self._city = item['city']
         self._state = None
-        self._name = name + " " +item['city']
+        self._name = name + " " + item['city']
         self._pollen = None
         self._result = None
         self._status = namedtuple(
-            'status', [ATTR_POLLEN, ATTR_TODAY, ATTR_TYPE])
+            'status', [ATTR_POLLEN, 'day0_value', ATTR_TYPE])
 
     @property
     def name(self):
@@ -115,9 +114,10 @@ class PollenkollSensor(Entity):
             self._pollen = {}
 
             for item in pollen:
-                if item['type'] == self._item['state']:
-                    self._state = item['type'] + ": " + item['day0_value']
-                self._pollen.update({item['type']: item['day0_value']})
+                for day in range(4):
+                    if item['type'] == self._item['state']:
+                        self._state = item['type'] + " " + str(day) + ": " + item['day' + str(day) +'_desc']
+                    self._pollen.update({item['type'] + " " + str(day): item['day' + str(day) +'_desc']})
 
         except TypeError as e:
             self._result = None
